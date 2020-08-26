@@ -5,8 +5,8 @@
         <action_delete>false</action_delete>
         <action_insert>true</action_insert>
         <action_query>false</action_query>
-        <action_update>true</action_update>
-        <active>false</active>
+        <action_update>false</action_update>
+        <active>true</active>
         <add_message>false</add_message>
         <advanced>true</advanced>
         <change_fields>false</change_fields>
@@ -18,7 +18,7 @@
         <filter_condition/>
         <is_rest>false</is_rest>
         <message/>
-        <name>NeedIt Debugging Practice</name>
+        <name>List all open tickets</name>
         <order>100</order>
         <priority>100</priority>
         <rest_method/>
@@ -27,60 +27,47 @@
         <rest_service_text/>
         <rest_variables/>
         <role_conditions/>
-        <script><![CDATA[(function executeRule(current, previous /*null when async*/) {
+        <script><![CDATA[ (function executeRule(current, previous /*null when async*/) {
 
-	// Add your code here
-current.short_description = "This text set by the Debugging Business Rules business rule.";
-var myNum = current.state;
-	
-// The function in this try/catch is not defined
-try{
-	thisFunctionDoesNotExist();
-}
-catch(err){
-	gs.error("NeedIt App: a JavaScript runtime error occurred - " + err);
-}
+        // 1. Create an object to store rows from a table
+        var grNeedIt = new GlideRecord('x_58872_needit_needit');
 
-// This function is not defined and is not part of a try/catch
-   thisFunctionAlsoDoesNotExist();
+        // 2. Build query
+        grNeedIt.addQuery('active','=',true);
+        grNeedIt.addQuery('u_requested_for','=',current.u_requested_for);
 
-// getNum and setNum demonstrate JavaScript Closure
-var x = 7;
+        // 3. Execute query  
+        grNeedIt.query();
 
-function numFunc(){
-	var x = 10;
-	return{
-		getNum: function(){
-			return x;
-		},
-		setNum: function(newNum){
-			x = newNum;
-		}
-	};
-}
-var callFunc = numFunc();
-callFunc.getNum();
-callFunc.setNum(2);
-callFunc.getNum();
+        // Initialize message to list NeedIt requests for user
+        var msg = "Other NeedIt Requests for user: ";
 
-})(current, previous);]]></script>
+        // 4. Process returned records
+        while(grNeedIt.next()){
+            // add a new line to the message for each NeedIt for the user
+            msg = msg + grNeedIt.getValue('number') + ": " + grNeedIt.getValue('short_description') + " | ";
+        }
+
+        gs.addInfoMessage(msg);
+
+    })(current, previous);]]></script>
         <sys_class_name>sys_script</sys_class_name>
         <sys_created_by>admin</sys_created_by>
-        <sys_created_on>2020-08-12 20:48:53</sys_created_on>
+        <sys_created_on>2020-08-18 20:21:32</sys_created_on>
         <sys_domain>global</sys_domain>
         <sys_domain_path>/</sys_domain_path>
-        <sys_id>9cb3699207625010c581f1d08c1ed07b</sys_id>
-        <sys_mod_count>2</sys_mod_count>
-        <sys_name>NeedIt Debugging Practice</sys_name>
+        <sys_id>31a610d007ba1010c581f1d08c1ed0b1</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>List all open tickets</sys_name>
         <sys_overrides/>
         <sys_package display_value="NeedIt" source="x_58872_needit">6ead8e780f603200cd674f8ce1050ed1</sys_package>
         <sys_policy/>
         <sys_scope display_value="NeedIt">6ead8e780f603200cd674f8ce1050ed1</sys_scope>
-        <sys_update_name>sys_script_9cb3699207625010c581f1d08c1ed07b</sys_update_name>
+        <sys_update_name>sys_script_31a610d007ba1010c581f1d08c1ed0b1</sys_update_name>
         <sys_updated_by>admin</sys_updated_by>
-        <sys_updated_on>2020-08-18 20:24:11</sys_updated_on>
+        <sys_updated_on>2020-08-18 20:21:32</sys_updated_on>
         <template/>
         <when>before</when>
     </sys_script>
-    <sys_translated_text action="delete_multiple" query="documentkey=9cb3699207625010c581f1d08c1ed07b"/>
+    <sys_translated_text action="delete_multiple" query="documentkey=31a610d007ba1010c581f1d08c1ed0b1"/>
 </record_update>
